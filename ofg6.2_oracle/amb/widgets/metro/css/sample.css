@@ -1,0 +1,299 @@
+* {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+body {
+	background: #EEEEEE url(../img/bg.jpg);
+}
+body, html, p, h1, h2, h3, h4, h5, h6 {
+	font-family: "Lato", "Helvetica", serif;
+	font-weight: normal;
+}
+code {
+	font-family: "Consolas", "Monaco", monospace;
+	font-weight: normal;
+}
+body, html, p, code {
+	color: #888888;
+}
+h1, h2, h3, h4, h5, h6 {
+	color: #444444;
+}
+pre {
+	overflow: scroll;
+	background: #EEEEEE;
+	padding: 10px;
+}
+#head {
+	height: 60px;
+	margin: 20px auto;
+	background: url(../img/logo.png) no-repeat;
+}
+#head div {
+	text-align: right;
+	color: #EEEEEE;
+	font-size: 24px;
+	font-weight: bold;
+}
+#head div img {
+	width: 36px;
+	height: 36px;
+	border: none;
+}
+.content {
+	width: 980px;
+	margin: 20px auto;
+}
+.formats .format {
+	display: inline-block;
+}
+.zip {
+	background: url("../images/zip.png");
+	display: block;
+	width: 128px;
+	height: 128px;
+}
+.tar {
+	background: url("../images/tar.png");
+	display: block;
+	width: 128px;
+	height: 128px;
+}
+.fork {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border: 0;
+}
+.button {
+	display: block;
+	padding: 20px;
+	width: 200px;
+	color: white;
+	background: #888888;
+	margin: 20px 0;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 4px;
+}
+pre .support.tag {
+	color: #000088;
+}
+pre .support.attribute {
+	color: #880000;
+}
+pre .string.value {
+	color: #008800;
+}
+.example {
+	position: relative;
+}
+.example .brick {
+	opacity: 1;
+	cursor: pointer;
+	position: relative;
+}
+.example .brick .delete {
+	display: block;
+	color: white;
+	background: rgba(255, 255, 255, 0.2);
+	width: 24px;
+	height: 24px;
+	top: 0;
+	right: 0;
+	position: absolute;
+	text-align: center;
+	line-height: 24px;
+	text-decoration: none;
+}
+.example .brick.small {
+	width: 140px;
+	height: 140px;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 4px;
+	font-weight: bold;
+	color: white;
+}
+.example .brick.small img{
+	width: 140px;
+	height: 140px;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 4px;
+	font-weight: bold;
+	color: white;
+}
+.example .brick.large {
+	width: 300px;
+	height: 300px;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 4px;
+	font-weight: bold;
+	color: white;
+}
+.example .brick.large img{
+	width: 300px;
+	height: 300px;
+	text-align: center;
+	vertical-align: middle;
+	border-radius: 4px;
+	font-weight: bold;
+	color: white;
+}
+.example .brick.dragging {
+	opacity: 0.8;
+}
+/** 50个模块背景色初始化 */
+.example .brick:nth-child(20n + 1) {
+	background: #9A32CD;
+}
+.example .brick:nth-child(20n + 2) {
+	background: #90EE90;
+}
+.example .brick:nth-child(20n + 3) {
+	background: #2F4F4F;
+}
+.example .brick:nth-child(20n + 4) {
+	background: #708090;
+}
+.example .brick:nth-child(20n + 5) {
+	background: #8B658B;
+}
+.example .brick:nth-child(20n + 6) {
+	background: #8470FF;
+}
+.example .brick:nth-child(20n + 7) {
+	background: #006400;
+}
+.example .brick:nth-child(20n + 8) {
+	background: #9ACD32;
+}
+.example .brick:nth-child(20n + 9) {
+	background: #6B8E23;
+}
+.example .brick:nth-child(20n + 10) {
+	background: #BDB76B;
+}
+.example .brick:nth-child(20n + 11) {
+	background: #FFD700;
+}
+.example .brick:nth-child(20n + 12) {
+	background: #B22222;
+}
+.example .brick:nth-child(20n + 13) {
+	background: #CD5C5C;
+}
+.example .brick:nth-child(20n + 14) {
+	background: #CD853F;
+}
+.example .brick:nth-child(20n + 15) {
+	background: #FA8072;
+}
+.example .brick:nth-child(20n + 16) {
+	background: #F08080;
+}
+.example .brick:nth-child(20n + 17) {
+	background: #FF69B4;
+}
+.example .brick:nth-child(20n + 18) {
+	background: #BA55D3;
+}
+.example .brick:nth-child(20n + 19) {
+	background: #9370DB;
+}
+.example .brick:nth-child(20n + 20) {
+	background: #008B8B;
+}
+.example .brick:nth-child(20n + 21) {
+	background: #8B008B;
+}
+.example .brick:nth-child(20n + 22) {
+	background: #551A8B;
+}
+.example .brick:nth-child(20n + 23) {
+	background: #8B0000;
+}
+.example .brick:nth-child(20n + 24) {
+	background: #D02090;
+}
+.example .brick:nth-child(20n + 25) {
+	background: #FF00FF;
+}
+.example .brick:nth-child(20n + 26) {
+	background: #DA70D6;
+}
+.example .brick:nth-child(20n + 27) {
+	background: #BA55D3;
+}
+.example .brick:nth-child(20n + 28) {
+	background: #9932CC;
+}
+.example .brick:nth-child(20n + 29) {
+	background: #8A2BE2;
+}
+.example .brick:nth-child(20n + 30) {
+	background: #A020F0;
+}
+.example .brick:nth-child(20n + 31) {
+	background: #6495ED;
+}
+.example .brick:nth-child(20n + 32) {
+	background: #483D8B;
+}
+.example .brick:nth-child(20n + 33) {
+	background: #6A5ACD;
+}
+.example .brick:nth-child(20n + 34) {
+	background: #7B68EE;
+}
+.example .brick:nth-child(20n + 35) {
+	background: #8470FF;
+}
+.example .brick:nth-child(20n + 36) {
+	background: #4169E1;
+}
+.example .brick:nth-child(20n + 37) {
+	background: #1E90FF;
+}
+.example .brick:nth-child(20n + 38) {
+	background: #00BFFF;
+}
+.example .brick:nth-child(20n + 39) {
+	background: #87CEEB;
+}
+.example .brick:nth-child(20n + 40) {
+	background: #87CEFA;
+}
+.example .brick:nth-child(20n + 41) {
+	background: #4682B4;
+}
+.example .brick:nth-child(20n + 42) {
+	background: #B0C4DE;
+}
+.example .brick:nth-child(20n + 43) {
+	background: #ADD8E6;
+}
+.example .brick:nth-child(20n + 44) {
+	background: #B0E0E6;
+}
+.example .brick:nth-child(20n + 45) {
+	background: #AFEEEE;
+}
+.example .brick:nth-child(20n + 46) {
+	background: #00CED1;
+}
+.example .brick:nth-child(20n + 47) {
+	background: #48D1CC;
+}
+.example .brick:nth-child(20n + 48) {
+	background: #40E0D0;
+}
+.example .brick:nth-child(20n + 49) {
+	background: #00FFFF;
+}
+.example .brick:nth-child(20n + 50) {
+	background: #9370DB5;
+}

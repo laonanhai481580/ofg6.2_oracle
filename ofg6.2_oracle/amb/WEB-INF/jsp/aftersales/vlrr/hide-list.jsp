@@ -1,0 +1,321 @@
+<%@ page contentType="text/html;charset=UTF-8" import="java.util.*"%>
+<%@ include file="/common/taglibs.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>企业管理效率促进专家</title>
+	<%@include file="/common/meta.jsp" %>
+	<script src="${resourcesCtx}/widgets/validation/validate-all-1.0.js" type="text/javascript"></script>
+	<script src="${resourcesCtx}/widgets/validation/dynamic.validate.js" type="text/javascript"></script>
+	<script type="text/javascript" src="${resourcesCtx}/widgets/colorbox/jquery.colorbox.js"></script>
+	<script type="text/javascript" src="${resourcesCtx}/js/search.js"></script>
+ 	   <style type="text/css">
+    	.ui-jqgrid .ui-jqgrid-htable th div {
+		    height:auto;
+		    overflow:hidden;
+		    padding-right:2px;
+		    padding-top:2px;
+		    position:relative;
+		    vertical-align:text-top;
+		    white-space:normal !important;
+		}
+    </style> 
+	<script type="text/javascript">
+	var isFirst = true;
+	$.extend($.jgrid.defaults,{
+		beforeRequest : function(){
+			if(isFirst){
+				isFirst = false;
+				contentResize();
+			}
+		},
+	});
+	function contentResize(){
+		var gridWidth = $(".ui-layout-center").width()-20;
+		var boxHeight = 0;
+		if($("#search_box").is(":visible")){
+			boxHeight = $("#search_box").height();
+		}
+		$("#inspectionList").jqGrid("setGridWidth",gridWidth);
+		var gridHeight = $("#opt-content").height() - boxHeight - $(".ui-jqgrid-hbox").height() - 55;
+		$("#inspectionList").jqGrid("setGridHeight",gridHeight);
+	}
+    function showSearchDiv(obj){
+		iMatrix.showSearchDIV(obj);
+		if($("#search_box").is(":visible")){
+			var p = $("#search_box").position();
+			var postData = $("#inspectionList").jqGrid("getGridParam","postData");
+			//默认查询条件为今天
+			if(postData.searchParameters==undefined){
+			}
+		}else{
+			$("#search_box").css("top",40+"px");
+			$("#gbox_inspectionList").css("top","0px");
+		}
+		contentResize();
+	}	
+	function selectBusinessUnit(obj){
+		window.location.href = encodeURI('${aftersalesctx}/vlrr/list.htm?businessUnit='+ obj.value);
+	}
+	
+	//重写(单行保存前处理行数据)
+	function $processRowData(data){
+		data.businessUnit = $("#businessUnit").val();
+		return data;
+	}
+	//后台返回错误信息
+	function $successfunc(response){
+		var jsonData = eval("(" + response.responseText+ ")");
+		if(jsonData.error){
+			alert(jsonData.message);
+		}else{
+			return true;
+		}
+	}
+	function $addGridOption(jqGridOption){
+		jqGridOption.postData.businessUnit=$("#businessUnit").val();
+	}
+	var selRowId = null;
+	function $oneditfunc(rowId){
+		selRowId = rowId;
+		$("#" + rowId + "_inputCount").keyup(caculateBadRate);
+		$("#" + rowId + "_unqualifiedCount").keyup(caculateBadRate);
+		$("#" + rowId + "_unqualifiedRate").attr("disabled","disabled");
+		$("#" + rowId + "_customerName").change(function(){
+			customerNameChange(rowId);
+		});
+	}
+	function customerNameChange(rowid){
+		selRowId=rowid;	
+		var customerName=$("#"+selRowId+"_customerName").val();
+		var url = "${aftersalesctx}/base-info/customer/place-select.htm?customerName="+customerName;
+		$.post(encodeURI(url),{},function(result){
+ 			if(result.error){
+ 				alert(result.message);
+ 			}else{
+				var places = result.places;
+				var placeArr = places.split(",");
+				var place = document.getElementById(selRowId+"_customerFactory");
+				place.options.length=0;
+				var opp1 = new Option("","");
+				place.add(opp1);
+ 				for(var i=0;i<placeArr.length;i++){
+ 					var opp = new Option(placeArr[i],placeArr[i]);
+ 					place.add(opp);
+ 				}
+ 			}
+ 		},'json');
+	}	
+	function caculateBadRate(){
+		var inputCount = $("#" + selRowId + "_inputCount").val();
+		var unqualifiedCount = $("#" + selRowId + "_unqualifiedCount").val();
+		if(isNaN(inputCount)){
+			alert("投入数必须为整数！");
+			$("#" + selRowId + "_inputCount").focus();
+			$("#" + selRowId + "_unqualifiedRate").val("");
+			return;
+		}
+		if(isNaN(unqualifiedCount)){
+			alert("不良数必须为整数！");
+			$("#" + selRowId + "_unqualifiedCount").focus();
+			$("#" + selRowId + "_unqualifiedRate").val("");
+			return;
+		}
+
+		if((inputCount-0)<(unqualifiedCount-0)){
+			alert("不良数不能大于投入数！");
+			$("#" + selRowId + "_unqualifiedRate").val("");
+			return;
+		}
+		if(unqualifiedCount&&inputCount){
+			var rate=unqualifiedCount*100/inputCount;
+			$("#" + selRowId + "_unqualifiedRate").val(rate.toFixed(2)+"%");
+		}		
+	}
+	function customerModelClick(obj){
+		selRowId=obj.rowid;	
+		modelClick();
+	}
+	function ofilmModelClick(obj){
+		selRowId=obj.rowid;	
+		modelClick();
+	}
+ 	function modelClick(){
+		var customerName=$("#"+selRowId+"_customerName").val();
+ 		var url = '${aftersalesctx}/base-info/customer/model-select.htm?customerName='+customerName;
+ 		$.colorbox({href:encodeURI(url),iframe:true, 
+ 			innerWidth:700, 
+			innerHeight:500,
+ 			overlayClose:false,
+ 			title:"选择机型"
+ 		});
+ 	}
+ 	
+	//选择之后的方法 data格式{key:'a',value:'a'}
+ 	function setProblemValue(datas){
+ 		$("#"+selRowId+"_customerModel").val(datas[0].value);
+ 		$("#"+selRowId+"_ofilmModel").val(datas[0].key);
+ 	}
+	function edit(){
+		var rowIds = $("#inspectionList").jqGrid("getGridParam","selarrrow");
+		var editId=rowIds[0];
+		if(rowIds.length==0){
+			alert("请选择需要编辑的数据!");
+			return false;
+		}
+		if(rowIds.length>1){
+			alert("只能同时编辑一条数据!");
+			return false;
+		}		
+		var businessUnit=$("#businessUnit").val();
+		window.location="${aftersalesctx}/vlrr/input.htm?businessUnit="+businessUnit;
+	}
+	function editAdd(){
+		var businessUnit=$("#businessUnit").val();
+		window.location="${aftersalesctx}/vlrr/input.htm?businessUnit="+businessUnit;
+	}		
+		/*---------------------------------------------------------
+		函数名称:customSave
+		参          数:
+			gridId	表格的ID
+		功          能:自定义保存方法
+		------------------------------------------------------------*/
+		function customSave(gridId){
+			
+			if(lastsel==undefined||lastsel==null){
+				alert("当前没有可编辑的行!");
+				return;
+			}
+			var $grid = $("#" + gridId);
+			var o = getGridSaveParams(gridId);
+			if ($.isFunction(gridBeforeSaveFunc)) {
+				gridBeforeSaveFunc.call($grid);
+			}
+			$grid.jqGrid("saveRow",lastsel,o);
+		}
+	 	//导入台账数据
+		function importDatas(){
+	 		var businessUnit=$("#businessUnit").val();
+			var url = encodeURI('${aftersalesctx}/vlrr/import.htm?businessUnit='+businessUnit);
+			$.colorbox({href:url,iframe:true, innerWidth:350, innerHeight:200,
+				overlayClose:false,
+				title:"导入台账数据",
+				onClosed:function(){
+					$("#inspectionList").trigger("reloadGrid");
+				}
+			});
+		}
+		function downloadTemplate(){
+			window.location = '${aftersalesctx}/vlrr/download-template.htm';
+		}	
+		function inputNew(obj){
+			var businessUnit=$("#businessUnit").val();
+			window.location.href = encodeURI('${aftersalesctx}/vlrr/input-new.htm?businessUnit='+ businessUnit);
+		}	
+		
+		var params = {};
+	 	function hide(obj){
+	 		var id = $("#inspectionList").jqGrid("getGridParam","selarrrow");
+	 		if(id.length==0){
+	 			alert("请选择需要取消敏感标记的数据！");
+	 			return ;
+	 		} 		
+	 		var url="${aftersalesctx}/vlrr/hiddenState.htm?id="+id+"&&type=Y";
+			$.post(encodeURI(url),params,function(result){
+				if(result.error){
+					alert("操作失败,"+result.message);
+				}else{
+					alert(result.message);
+				};
+				$("#inspectionList").jqGrid("setGridParam").trigger("reloadGrid");
+			},'json');
+	 	}		
+		
+	</script>
+</head>
+
+<body onclick="$('#sysTableDiv').hide(); $('#styleList').hide();" >
+	<input type="hidden" id="businessUnit"  value="${businessUnit}"/>
+	<script type="text/javascript">
+		var secMenu="vlrr";
+		var thirdMenu="vlrr_data_hide";
+	</script>
+
+	<div id="header" class="ui-north">
+		<%@ include file="/menus/header.jsp" %>
+	</div>
+	
+	<div id="secNav">
+		<%@ include file="/menus/aftersales-sec-menu.jsp"%>
+	</div>
+
+	<div class="ui-layout-west">
+		<%@ include file="/menus/aftersales-vlrr-third-menu.jsp"%>
+	</div>
+	<div class="ui-layout-center">
+		<div class="opt-body">
+			<form id="defaultForm" name="defaultForm" method="post" action=""></form>
+			<aa:zone name="main">
+			<div class="opt-btn">
+			<security:authorize ifAnyGranted="AFS_VLRR_DATA_DELETE">
+				<button class='btn' onclick="showSearchDiv(this);" type="button"><span><span><b class="btn-icons btn-icons-search"></b>查询</span></span></button>
+			</security:authorize>
+			<security:authorize ifAnyGranted="AFS_VLRR_DATA_EXPORT_HIDE">
+				<button class="btn" onclick="iMatrix.export_Data('${aftersalesctx}/vlrr/export-hide.htm?businessUnit=${businessUnit }');"><span><span><b class="btn-icons btn-icons-export"></b>导出</span></span></button>
+			</security:authorize>
+			<security:authorize ifAnyGranted="AFS_VLRR_DATA_HIDE">
+				<button class='btn' onclick="hide(this)" type="button">
+					<span><span><b class="btn-icons btn-icons-undo"></b>取消标记</span></span>
+				</button>
+			</security:authorize>			
+			
+				厂区：
+								 <s:select list="businessUnits" 
+									theme="simple"
+									listKey="value" 
+									listValue="name" 
+									id="businessUnit"
+									name="businessUnit"
+									onchange="selectBusinessUnit(this)"
+									cssStyle="width:100px"
+									emptyOption="false"
+									labelSeparator="">
+								</s:select> 
+								<span style="color:red;font-size:18px;" >* <span style="font-family:verdana;color:red;font-size:10px;">双击可编辑,Enter(回车)可保存.</span></span>
+			</div>
+			<div style="display: none;" id="message"><font class=onSuccess><nobr>删除成功</nobr></font></div>
+			<div id="opt-content">
+				<input type="hidden" id="colCode"  name="colCode" value="${colCode}"/>
+				<form id="contentForm" name="contentForm" method="post"  action="">
+						<grid:jqGrid gridId="inspectionList" url="${aftersalesctx}/vlrr/hide-list-datas.htm" code="AFS_VLRR_DATA" pageName="dynamicPage" dynamicColumn="${dynamicColumn}"></grid:jqGrid>
+						<script type="text/javascript">
+							$(document).ready(function(){
+								$("#inspectionList").jqGrid('setGroupHeaders', {
+									  useColSpanStyle: true, 
+									  groupHeaders:${groupHeaders}
+									});
+							});
+							function $gridComplete(){
+								$("td[role=gridcell]").each(function(index,obj){
+									var ariaDescribedby = $(obj).attr("aria-describedby");
+									if(ariaDescribedby&&ariaDescribedby=="inspectionList_unqualifiedRate"){
+										var title = $(obj).attr("title");	
+										if(!title){
+											var inputCount=	$(obj).parent().find("td[aria-describedby=inspectionList_inputCount]").attr("title");
+											var unqualifiedCount=	$(obj).parent().find("td[aria-describedby=inspectionList_unqualifiedCount]").attr("title");
+											if(inputCount&&unqualifiedCount){
+												var rate=unqualifiedCount*100/inputCount;
+												$(obj).html(rate.toFixed(2)+"%");
+											}
+										}
+									}
+								});
+							}
+						</script>
+				</form>
+			</div>
+			</aa:zone>
+		</div>
+	</div>
+</body>
+</html>
